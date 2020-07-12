@@ -3,6 +3,7 @@ const User = require('../models/User');
 const {registerValidation, loginValidation} = require('../validate');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const auth = require('../middlewares/auth');
 
 
 
@@ -26,22 +27,39 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(req.body.password, salt);
 
-    //Create a new User for register
+    //Create a new User to register
     const user = new User({
         userId: req.body.userId,
         email: req.body.email,
         password: hashPassword
     });
 
-    console.log("Just before saving user")
     //Save the created user to MongoDB
-    try {
+    
+    try{
         const savedUser = await user.save();
-        res.send({user: savedUser._id});
+        
+        const token = jwt.sign(
+            {id: savedUser._id},
+            process.env.TOKEN_SECRET,
+            { expiresIn: 3600});
+       
+            res.send(
+                {
+                    token,
+                    user: {
+                        id: savedUser._id,
+                        userId: savedUser.userId,
+                        email: savedUser.email,
+                    }
+                }
+            );
     } catch(err){
         res.status(400).send(err);
     }
+    
 });
+
 
 router.post('/login', async (req, res) => {
 
@@ -61,9 +79,32 @@ router.post('/login', async (req, res) => {
         return res.status(400).send('Email or password is invalid');
     }
 
-    //Create and assign a token
-    const token = jwt.sign({_id: user.id}, process.env.TOKEN_SECRET);
-    res.header('auth-token', token).send(token);
+    const token = jwt.sign(
+        {id: user._id},
+        process.env.TOKEN_SECRET,
+        { expiresIn: 3600});
+   
+        res.send(
+            {
+                token,
+                user: {
+                    id: user._id,
+                    userId: user.userId,
+                    email: user.email,
+                }
+            }
+        );
+});
+
+
+router.get('/current_user', auth, async (req, res) => {
+    
+    const user = await User.findById(req.user.id, {password: 0});
+
+    if(!user) res.status(400).send({msg: 'User not found'});
+
+    res.status(200).send(user);
+
 
 });
 

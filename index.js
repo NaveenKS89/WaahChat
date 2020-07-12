@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 app.use(express.json());
 //Import authRoute for login Routes
 const authRoute = require('./Routes/authRoutes');
-const posts = require('./Routes/posts');
+
 
 dotenv.config();
 
@@ -16,7 +16,6 @@ mongoose.connect(process.env.DB_CONNECT, { useNewUrlParser: true, useUnifiedTopo
 
 //Middlewares
 app.use('/api/user', authRoute);
-app.use('/api/posts', posts);
 
 
 app.listen(5000, () => console.log('Server up and running'));
