@@ -9,6 +9,16 @@ import {addMessage, deleteAllMessage, addInitialMessage} from '../actions/chatAc
 import {addInitialOnlineUserList, delFetchedUsers, addNewOnlineUserToList, delOnlineUserfromList} from '../actions/onlineUsers';
 import {delUserSelectedToChat} from '../actions/chatActions';
 
+let socketLink;
+
+if(process.env.NODE_ENV === 'production'){
+    //we are in production - return prod set of keys
+    socketLink = 'https://agile-plateau-29900.herokuapp.com';
+}
+else{
+    //we are in development - return dev set of keys
+    socketLink = 'http://localhost:5000';
+}
 
 class ChatRoom extends React.Component {
 
@@ -29,7 +39,7 @@ class ChatRoom extends React.Component {
 
         if(this.props.isAuthenticated){
 
-                let tempSocket = io('http://localhost:5000', {
+                let tempSocket = io(`${socketLink}`, {
                     query: {
                       token: this.props.token,
                       email: this.props.user ? this.props.user.email: null,
