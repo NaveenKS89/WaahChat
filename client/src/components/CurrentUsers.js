@@ -135,7 +135,7 @@ class CurrentUsers extends React.Component{
 
             return (
                 <a href="!#" onClick={(e) => this.handleClick(e, user)} key={user.userId} className={`collection-item avatar ${(this.props.selectedUser && this.props.selectedUser.userId === user.userId)?'active':''}`}>
-                    <img src={`http://localhost:5000/userprofilepic/${user.profilePicName}`} alt="" className="circle" />
+                    <img src={`${imgLink}${user.profilePicName}`} alt="" className="circle" />
                     <span className="title" style={{fontWeight: 'bold'}}>{str1}</span>
                     <p>online</p>
                 </a>
