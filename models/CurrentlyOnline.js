@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
+const UsersCurrentlyOnline = new mongoose.Schema({
     userId: {
         type: String,
         min: 6,
@@ -13,11 +13,14 @@ const UserSchema = new mongoose.Schema({
         max: 255,
         required: true,
     },
-    password: {
+    socketId: {
         type: String,
-        min: 6,
-        max: 1024,
+        max: 255,
         required: true
+    },
+    lastOnline: {
+        type: Date,
+        default: Date.now
     },
     profilePicName: {
         type: String,
@@ -31,4 +34,4 @@ const UserSchema = new mongoose.Schema({
 
 });
 
-module.exports = mongoose.model('users', UserSchema);
+module.exports = mongoose.model('users_currently_online', UsersCurrentlyOnline);

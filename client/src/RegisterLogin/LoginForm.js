@@ -5,14 +5,14 @@ import inputField from './inputField';
 import _ from 'lodash';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-//import {register} from '../actions/authActions';
+import {userLogin} from '../actions/authActions';
 import { withRouter } from 'react-router-dom';
+import {clearErrors} from '../actions/errorActions';
 
 const FIELDS = [
     {label: 'Email', name: 'email'},
     {label: 'password', name: 'password'}
 ];
-
 
 
 class LoginForm extends React.Component{
@@ -21,6 +21,44 @@ class LoginForm extends React.Component{
         email: '',
         password: '',
         msg: null
+    }
+
+    componentDidMount(){
+        if(this.props.isAuthenticated){
+                this.props.history.push('/chatroom');
+        }
+        
+    }
+
+
+    componentDidUpdate(prevProps){
+        const {error} = this.props;
+
+        if(this.props.isAuthenticated){
+                this.props.history.push('/chatroom');
+        }
+
+        if(error !== prevProps.error ){
+            //check for register error
+            if(error.id === "LOGIN_FAIL"){
+                this.setState({msg: error.msg})
+            } else{
+                this.setState({msg: null});
+            }
+       
+        }
+    }
+
+    renderError(){
+        if(!this.state.msg){
+            return null;
+        }
+
+        return (
+            <div className="red-text" style={{padding: "5px"}}>
+                {this.state.msg}
+            </div>
+        )
     }
 
     renderFields(){
@@ -36,16 +74,16 @@ class LoginForm extends React.Component{
 
     onLoginSubmit = e => {
 
-        console.log('reached OnLoginSubmit');
         const {email, password} = this.state;
 
         //Create user Object
-        const login = {
+        const user = {
             email,
             password
         };
 
-        //this.props.register(newUser, this.props.history); //need to update
+        //attempt to login
+        this.props.userLogin(user, this.props.history);
     };
 
     onChange = e => {
@@ -59,6 +97,7 @@ class LoginForm extends React.Component{
                 <h4 style={{paddingTop: "10px"}}>Login to account</h4>
                 <form className="container" onSubmit={this.props.handleSubmit((e) => this.onLoginSubmit(e))}>
                     {this.renderFields()}
+                    {this.renderError()}
                     <input type="submit" name="submit" value="Login" className="btn-flat white-text" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}} />
                 </form>
                 <div style={{padding: "20px"}}><p className="black-text" style={{padding: "5px"}}>Or</p>
@@ -73,9 +112,8 @@ class LoginForm extends React.Component{
 }
 
 function validate(values){
+    
     const errors = {};
-
-    //errors.recipients = validateEmails(values.recipients || '');
  
     _.each(FIELDS, ({name}) =>{
         if(!values[name]){
@@ -94,4 +132,4 @@ const mapStateToProps = state => ({
 export default reduxForm({
     validate: validate,
     form: 'loginForm',
-})(connect(mapStateToProps, {})(withRouter(LoginForm)));
+})(connect(mapStateToProps, {userLogin, clearErrors})(withRouter(LoginForm)));

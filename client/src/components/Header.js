@@ -1,45 +1,45 @@
 import React from "react";
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
+import {logout} from '../actions/authActions';
 
 
 class Header extends React.Component {
 
     renderContent(){
-        if(!this.props.isAuthenticated){
-            return [
-                    <li>
-                        <Link to="/login" className="waves-effect btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}>
-                            Login
-                        </Link>
-                    </li>,
-                    <li>
-                        <Link to="/register" className="waves-effect btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}>
-                            Sign up
-                        </Link>
-                    </li>
-                    ];
-        }
-
         if(this.props.isAuthenticated){
             return (
-                <li>
-                    <a href="/api/user/logout" className="waves-effect btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}} >Logout</a>
-                </li>
+                <button  onClick={() =>this.props.logout(this.props.socketId)} className="waves-effect btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`, marginRight: '5px'}}>
+                        Logout
+                </button>
             );
         }
 
-    }
+            return [
+                <li key={1}>
+                    <Link to="/login" className="waves-effect btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}>
+                        Login
+                    </Link>
+                </li>,
+                <li key={2}>
+                    <Link to="/register" className="waves-effect btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}>
+                        Sign up
+                    </Link>
+                </li>
+                ];
 
+    }
 
     render(){
         return(
             <div>
                 <nav>
                     <div className="nav-wrapper white">
-                        <a className="left" style={{paddingLeft: "5px", fontSize: "20px", color: "black"}}>WaahChat</a>
+                        <Link to="/" style={{paddingLeft: "5px", fontSize: "30px", color: "black"}}>
+                            WaahChat
+                        </Link>
                         <ul className="right ">
-                            <li></li>
+                            {this.renderContent()}
                         </ul>
                     </div>
                 </nav>
@@ -51,8 +51,9 @@ class Header extends React.Component {
 
 function mapStateToProps(state){
     return {
-        isAuthenticated: state.auth.isAuthenticated
+        isAuthenticated: state.auth.isAuthenticated,
+        socketId: state.socketId.socketId
     };
 }
 
-export default connect(mapStateToProps)(Header);
+export default connect(mapStateToProps, {logout})(Header);

@@ -1,5 +1,6 @@
 import axios from 'axios';
-import {returnErrors} from './errorActions';
+import {returnErrors, clearErrors} from './errorActions';
+import {deleteSocketId} from './deleteSocket';
 
 import {
     USER_LOADED,
@@ -19,49 +20,73 @@ export const loadUser = () => async (dispatch, getState) => {
 
     try{
     const response = await axios.get('/api/user/current_user', tokenConfig(getState));
-        if(response) dispatch({type: USER_LOADED, payload: response.data});
+        if(response) {
+            dispatch(clearErrors());
+            dispatch({type: USER_LOADED, payload: response.data});
+        }
     } catch(err){
         if(err){
             dispatch(returnErrors(err.response.data, err.response.status));
             dispatch({type: AUTH_ERROR, });
         }
     }
-};
-
+}
 //Register user
-export const register = ({userId, email, password}, history) => async dispatch => {
+export const register = ({userId, email, password, imgData}, history) => async dispatch => {
     const config = {
         headers: {
             'Content-type': 'application/json'
         }
     };
 
-    //Request body
-    const body = JSON.stringify({
-            userId: userId[0], 
-            email: email[0], 
-            password: password[0]
-        });
+    console.log(userId[0]);
+    const imgConfig = {
+        headers: {
+            'x-userId': userId[0]
+        }
+    }
 
-    try{
-    const response = await axios.post('/api/user/register', body, config);
+        try{
+            const imgName = await axios.post('/api/user/upload_image', imgData, imgConfig);
+            console.log(imgName.data);
 
-        history.push('/login');
-        dispatch({
-            type: REGISTER_SUCCESS,
-            payload: response.data
-        });
-        
-    } catch (err){
+                //Request body
+                const body = JSON.stringify({
+                userId: userId[0], 
+                email: email[0], 
+                password: password[0],
+                profilePicName: imgName.data
+                });
+
+                try{
+                    const response = await axios.post('/api/user/register', body, config);
+                    alert("Register Successful!");
+                    setTimeout(() => {
+                    history.push('/chatroom');
+                    }, 1000);
+            
+                    dispatch(clearErrors());
+                    dispatch({
+                    type: REGISTER_SUCCESS,
+                    payload: response.data
+                    });
+            
+                } catch (err){
+                dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'));
+                dispatch({
+                type: REGISTER_FAIL
+                });
+                }
+        }catch(err){
         dispatch(returnErrors(err.response.data, err.response.status, 'REGISTER_FAIL'));
         dispatch({
-            type: REGISTER_FAIL
+        type: REGISTER_FAIL
         });
     }
 }
 
 
-//Register user
+//Login user
 export const userLogin = ({email, password}, history) => async dispatch => {
     const config = {
         headers: {
@@ -75,16 +100,18 @@ export const userLogin = ({email, password}, history) => async dispatch => {
             password: password[0]
         });
 
-
     try{
-    const response = await axios.post('/api/user/register', body, config);
-
-        history.push('/login');
+        const response = await axios.post('/api/user/login', body, config);
+        alert("Login Successful!")
+        setTimeout(() => {
+            history.push('/chatroom');
+        }, 1000);
+        dispatch(clearErrors());
         dispatch({
             type: LOGIN_SUCCESS,
             payload: response.data
         });
-        
+
     } catch (err){
         dispatch(returnErrors(err.response.data, err.response.status, 'LOGIN_FAIL'));
         dispatch({
@@ -94,10 +121,11 @@ export const userLogin = ({email, password}, history) => async dispatch => {
 }
 
 // Logout User
-export const logout = () => {
-    return {
+export const logout = (socketId) => dispatch =>  {
+    dispatch(deleteSocketId(socketId));
+    dispatch({
       type: LOGOUT_SUCCESS
-    };
+    });
   };
 
 
@@ -116,8 +144,10 @@ export const tokenConfig = getState => {
 
     if(token){
         config.headers['x-auth-token'] = token;
+        
     }
 
     return config;
+    
 }
 
