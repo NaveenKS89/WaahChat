@@ -33,6 +33,19 @@ app.use('/api/user', authRoute);
 require('./Routes/getProfilePicRoutes')(app);
 app.use('/api/chat', auth, getChatDetails);
 
+if(process.env.NODE_ENV === 'production'){
+
+    const path = require('path');
+    //To serve files like main.js and main.css in production environment
+    app.use(express.static(path.resolve(__dirname,'client/build')));
+  
+    //TO serve files that express doesn't recongnize any routes
+    
+    app.get('*', (req, res)=>{
+      res.sendFile(path.resolve(__dirname, 'client','build', 'index.html'));
+    });
+  }
+
 io.on('connection', async socket => {
     console.log("socket connected with Socket ID: ", socket.id);
 
