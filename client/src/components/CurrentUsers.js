@@ -3,6 +3,16 @@ import {connect} from 'react-redux';
 import {userSelectedToChat, updateMsgReadCounter} from '../actions/chatActions';
 import _ from 'lodash';
 
+let imgLink;
+
+if(process.env.NODE_ENV === 'production'){
+    //we are in production - return prod set of keys
+    imgLink = 'https://agile-plateau-29900.herokuapp.com/userprofilepic/';
+}
+else{
+    //we are in development - return dev set of keys
+    imgLink = 'http://localhost:5000/userprofilepic/';
+}
 
 class CurrentUsers extends React.Component{
     state = { width: window.innerWidth, height: window.innerHeight };
@@ -97,7 +107,7 @@ class CurrentUsers extends React.Component{
             return (
                 <a href="!#" onClick={(e) => this.handleClickAllChatUser(e, singleChat.otherUserId)} key={singleChat.otherUserId} className={`collection-item avatar ${(this.props.selectedUser && this.props.selectedUser.userId === singleChat.otherUserId)?'active':''}`}>
                     {notifictionBadge}
-                    <img src={`http://localhost:5000/userprofilepic/${singleChat.profilePicName}`} alt="" className="circle" />
+                    <img src={`${imgLink}${singleChat.profilePicName}`} alt="" className="circle" />
                     <span className="title" style={{fontWeight: 'bold'}}>{str1}</span>
                     <p style={{whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis"}}>{singleChat.messages[singleChat.messages.length-1].msg}
                     <br />
