@@ -146,11 +146,11 @@ class ChatScreen extends React.Component{
             
             let counter = 0;
             return(
-                <div className="collection hoverable" style={{borderRadius: `${this.state.width>600?5:0}px`, height: `${this.state.width>600?this.state.height*0.8:this.state.height}px`, margin: '0px', marginTop: `${this.state.width>600?0:10}px`, borderWidth: "0px"}}>
+                <div className="collection hoverable" style={{borderRadius: `${this.state.width>600?5:0}px`, height: `${this.state.width>600?this.state.height*0.8:this.state.height}px`, margin: '0px', marginTop: `${this.state.width>600?0:0}px`, borderWidth: "0px"}}>
                     <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height*0.1}px`, margin: '0px'}}> 
                         <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}</h5></div>
                     </div>
-                    <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.6:this.state.height-56}px`, margin: '0px'}}>
+                    <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.6:this.state.height*0.9-46}px`, margin: '0px'}}>
                             {userChat?
                                 _.map(userChat.messages, msg => {
                                     
@@ -160,7 +160,7 @@ class ChatScreen extends React.Component{
                                 })
                                 : null
                             }
-                        <div style={{ float:"left", clear: "both" }}
+                        <div className="collection-item" style={{ float:"left", clear: "both" }}
                             ref={ this.messagesEndRef }>
                         </div>
                     </div>
