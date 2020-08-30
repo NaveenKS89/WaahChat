@@ -142,13 +142,33 @@ class ChatRoom extends React.Component {
 
     render(){
         return (
-            <div className="row" style={{height: `${this.state.height-56}px`, marginBottom: "0px" }}>
+            <div className="row" style={{height: `${this.state.width > 600 ? this.state.height-64: this.state.height-56}px`, marginBottom: "0px" }}>
+                {
+                this.state.width > 600 ?
                 <div className="col s12 m6 l6" style={{height: `${this.state.width > 600?this.state.height*0.8 :this.state.height-56}px`, marginTop: `${this.state.width>600?this.state.height*0.03 : 0}px`, marginBottom: `${this.state.width>600?this.state.height*0.03 : 0}px`, padding: `${this.state.width>600?10 : 0}px`}}>
                         <CurrentUsers />
                 </div>
+                :
+                this.props.selectedUser !== null ?
+                null
+                :
+                <div className="col s12 m6 l6" style={{height: `${this.state.width > 600?this.state.height*0.8 :this.state.height-56}px`, marginTop: `${this.state.width>600?this.state.height*0.03 : 0}px`, marginBottom: `${this.state.width>600?this.state.height*0.03 : 0}px`, padding: `${this.state.width>600?10 : 0}px`}}>
+                        <CurrentUsers />
+                </div>
+                }
+                {
+                this.state.width > 600 ?
                 <div className="col s12 m6 l6" style={{height: `${this.state.width > 600?this.state.height*0.8 :this.state.height-56}px`, marginTop: `${this.state.width>600?this.state.height*0.03 : 0}px`, marginBottom: `${this.state.width>600?this.state.height*0.03 : 0}px`, padding: `${this.state.width>600?10 : 0}px`}}>
                         <ChatScreen socket={this.state.socket}/>
                 </div>
+                :
+                this.props.selectedUser !== null ?
+                <div className="col s12 m6 l6" style={{height: `${this.state.width > 600?this.state.height*0.8 :this.state.height-56}px`, marginTop: `${this.state.width>600?this.state.height*0.03 : 0}px`, marginBottom: `${this.state.width>600?this.state.height*0.03 : 0}px`, padding: `${this.state.width>600?10 : 0}px`}}>
+                        <ChatScreen socket={this.state.socket}/>
+                </div>
+                :
+                null
+                }
             </div>
         )
     }
@@ -159,7 +179,8 @@ const mapStateToProps = state => ({
     token: state.auth.token,
     user: state.auth.user,
     error: state.error,
-    socketId: state.socketId.socketId
+    socketId: state.socketId.socketId,
+    selectedUser: state.selectedUserChat.userSelectedToChat,
 });
 
 export default connect(mapStateToProps, {deleteSocketId, addSocketId, addMessage, deleteAllMessage, delFetchedUsers, delUserSelectedToChat, addInitialMessage, addNewOnlineUserToList, delOnlineUserfromList, addInitialOnlineUserList})(withRouter(ChatRoom));

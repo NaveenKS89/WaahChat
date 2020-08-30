@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {addMessage} from '../actions/chatActions';
+import {addMessage, delUserSelectedToChat} from '../actions/chatActions';
 import _ from 'lodash';
 import './CustomerScrollBar.css';
 
@@ -104,10 +104,20 @@ class ChatScreen extends React.Component{
             if(this.props.selectedUser === null || this.props.selectedUser === undefined){
                 return (
                 <div className="collection hoverable" style={{borderRadius: `${this.state.width>600?5:0}px`, height: `${this.state.width>600?this.state.height*0.8:this.state.height}px`, margin: '0px', marginTop: `${this.state.width>600?0:10}px`, borderWidth: "0px"}}>
-                    <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height*0.1}px`, margin: '0px'}}> 
-                        <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}</h5></div>
+                    <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:69.5}px`, margin: '0px'}}> 
+                        <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}
+                        {
+                            this.state.width <= 600 && this.props.selectedUser !== null ?
+                            <button  onClick={() =>this.props.delUserSelectedToChat} className="waves-effect right btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`, marginRight: '5px'}}>
+                                Back
+                            </button>
+                            :
+                            null
+                            }
+                        </h5>
+                        </div>
                     </div>
-                    <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.7:this.state.height-56}px`, margin: '0px'}}>
+                    <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.7:this.state.height-125.5}px`, margin: '0px'}}>
                         <div className="collection-item">Select user to chat</div>
                     </div>
                 </div>
@@ -116,18 +126,28 @@ class ChatScreen extends React.Component{
             if(this.props.selectedUser && this.props.allChats.length < 2){
                 return (
                     <div className="collection hoverable" style={{borderRadius: `${this.state.width>600?5:0}px`, height: `${this.state.width>600?this.state.height*0.8:this.state.height}px`, margin: '0px', marginTop: `${this.state.width>600?0:10}px`, borderWidth: "0px"}}>
-                        <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height*0.1}px`, margin: '0px'}}> 
-                            <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}</h5></div>
+                        <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:69.5}px`, margin: '0px'}}> 
+                            <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}
+                            {
+                            this.state.width <= 600 && this.props.selectedUser !== null ?
+                            <button  onClick={() =>this.props.delUserSelectedToChat} className="waves-effect right btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`, marginRight: '5px'}}>
+                                Back
+                            </button>
+                            :
+                            null
+                            }
+                            </h5>
+                            </div>
                         </div>
-                        <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.6:this.state.height-56}px`, margin: '0px'}}>
+                        <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.6:this.state.height-195}px`, margin: '0px'}}>
                             <div className="collection-item">Start conversation to show up here</div>
                         </div>
-                        <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height*0.1}px`, margin: '0px'}}>
+                        <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height-69.5}px`, margin: '0px'}}>
                             <div className="collection-item">    
                                 <form onSubmit={this.handleOnSubmit} className="col s12" style={{padding: "0px"}}>
                                     <div className="row" style={{margin: "0px"}}>
                                         <div className="input-field col s9" style={{margin: "0px", padding: "0px"}}>
-                                            <textarea id="mytextarea" required onChange={this.handleTextInputChange} placeholder="Type a message" style={{overflow: "auto", rows: "2", resize: "none", border: "1px solid grey"}}></textarea>
+                                            <textarea autoFocus id="mytextarea" required onChange={this.handleTextInputChange} placeholder="Type a message" style={{overflow: "auto", rows: "2", resize: "none", border: "1px solid grey"}}></textarea>
                                         </div>
                                         <div className="input-field col s3" style={{margin: "0px"}}>
                                             <input className="btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}} type="submit" value="Send"></input>
@@ -146,11 +166,21 @@ class ChatScreen extends React.Component{
             
             let counter = 0;
             return(
-                <div className="collection hoverable" style={{borderRadius: `${this.state.width>600?5:0}px`, height: `${this.state.width>600?this.state.height*0.8:this.state.height}px`, margin: '0px', marginTop: `${this.state.width>600?0:0}px`, borderWidth: "0px"}}>
-                    <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height*0.1}px`, margin: '0px'}}> 
-                        <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}</h5></div>
+                <div className="collection hoverable" style={{borderRadius: `${this.state.width>600?5:0}px`, height: `${this.state.width>600?this.state.height*0.8:this.state.height-56}px`, margin: '0px', marginTop: `${this.state.width>600?0:0}px`, borderWidth: "0px"}}>
+                    <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:69.5}px`, margin: '0px'}}> 
+                        <div className="collection-item" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}}><h5 style={{textAlign: 'center'}}>{this.props.selectedUser?this.props.selectedUser.userId.toUpperCase():'CHAT SCREEN'}
+                        {
+                            this.state.width <= 600 && this.props.selectedUser !== null ?
+                            <button  onClick={this.props.delUserSelectedToChat} className="waves-effect right btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`, marginRight: '5px'}}>
+                                Back
+                            </button>
+                            :
+                            null
+                        }
+                        </h5>
+                        </div>
                     </div>
-                    <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.6:this.state.height*0.9-46}px`, margin: '0px'}}>
+                    <div className="collection" style={{overflow: "auto", height: `${this.state.width>600?this.state.height*0.6:this.state.height-195}px`, margin: '0px'}}>
                             {userChat?
                                 _.map(userChat.messages, msg => {
                                     
@@ -160,16 +190,16 @@ class ChatScreen extends React.Component{
                                 })
                                 : null
                             }
-                        <div className="collection-item" style={{ float:"left", clear: "both" }}
+                        <div className="collection-item" style={{ float:"left", clear: "both", padding: "0px" }}
                             ref={ this.messagesEndRef }>
                         </div>
                     </div>
-                    <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:this.state.height*0.1}px`, margin: '0px'}}>
+                    <div className="collection" style={{height: `${this.state.width>600?this.state.height*0.1:69.5}px`, margin: '0px'}}>
                         <div className="collection-item">    
                             <form onSubmit={this.handleOnSubmit} className="col s12" style={{padding: "0px"}}>
                                 <div className="row" style={{margin: "0px"}}>
                                     <div className="input-field col s9" style={{margin: "0px", padding: "0px"}}>
-                                        <textarea autofocus id="mytextarea" required onChange={this.handleTextInputChange} placeholder="Type a message" style={{overflow: "auto", rows: "2", resize: "none", border: "1px solid grey"}}></textarea>
+                                        <textarea autoFocus id="mytextarea" required onChange={this.handleTextInputChange} placeholder="Type a message" style={{overflow: "auto", rows: "2", resize: "none", border: "1px solid grey"}}></textarea>
                                     </div>
                                     <div className="input-field col s3" style={{margin: "0px"}}>
                                         <input className="btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}} type="submit" value="Send"></input>
@@ -196,4 +226,4 @@ const mapStateToProps = state => ({
     selectedUser: state.selectedUserChat.userSelectedToChat
 });
 
-export default connect(mapStateToProps, {addMessage})(ChatScreen);
+export default connect(mapStateToProps, {addMessage, delUserSelectedToChat})(ChatScreen);
