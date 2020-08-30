@@ -169,7 +169,7 @@ class ChatScreen extends React.Component{
                             <form onSubmit={this.handleOnSubmit} className="col s12" style={{padding: "0px"}}>
                                 <div className="row" style={{margin: "0px"}}>
                                     <div className="input-field col s9" style={{margin: "0px", padding: "0px"}}>
-                                        <textarea id="mytextarea" required onChange={this.handleTextInputChange} placeholder="Type a message" style={{overflow: "auto", rows: "2", resize: "none", border: "1px solid grey"}}></textarea>
+                                        <textarea autofocus id="mytextarea" required onChange={this.handleTextInputChange} placeholder="Type a message" style={{overflow: "auto", rows: "2", resize: "none", border: "1px solid grey"}}></textarea>
                                     </div>
                                     <div className="input-field col s3" style={{margin: "0px"}}>
                                         <input className="btn" style={{background: `linear-gradient(to right, rgb(255, 128, 0) , rgb(255, 117, 140))`}} type="submit" value="Send"></input>
