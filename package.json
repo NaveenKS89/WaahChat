@@ -30,7 +30,7 @@
     "nodemon": "^2.0.4",
     "path-parser": "^6.1.0",
     "react-gradient-text": "^0.1.0",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "url": "^0.11.0"
   }
 }
